@@ -65,12 +65,8 @@ def restore_operations(dp, a, b, replace_cost, insert_cost, delete_cost):
     while i > 0 or j > 0:
         print(f"\nПозиция: i={i}, j={j}, значение={dp[i][j]}")
 
-        if j > 0 and dp[i][j] == dp[i][j - 1] + insert_cost:
-            operations.append("I")
-            print("Берём I: вставка символа из B")
-            j -= 1
-
-        elif i > 0 and j > 0:
+        # Замена
+        if i > 0 and j > 0:
             if a[i - 1] == b[j - 1]:
                 cost = 0
                 operation = "M"
@@ -83,15 +79,20 @@ def restore_operations(dp, a, b, replace_cost, insert_cost, delete_cost):
                 print(f"Берём {operation}: A[{i - 1}]='{a[i - 1]}', B[{j - 1}]='{b[j - 1]}'")
                 i -= 1
                 j -= 1
-            else:
-                operations.append("D")
-                print(f"Берём D: удаление A[{i - 1}]='{a[i - 1]}'")
-                i -= 1
-
-        else:
+                continue
+        # Удаление
+        if i > 0 and dp[i][j] == dp[i - 1][j] + delete_cost:
             operations.append("D")
             print(f"Берём D: удаление A[{i - 1}]='{a[i - 1]}'")
             i -= 1
+            continue
+
+        # Вставка
+        if j > 0 and dp[i][j] == dp[i][j - 1] + insert_cost:
+            operations.append("I")
+            print("Берём I: вставка символа из B")
+            j -= 1
+            continue
 
     operations.reverse()
 
